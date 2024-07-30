@@ -1,26 +1,11 @@
 import {Link, Navigate, useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import {Input} from "./Input";
+import {useUserContext} from "../../store/user-context";
 
-export const SignUp = () => {
+export const Login = () => {
+    const context = useUserContext();
     const [user, setUser] = useState({
-        name: {
-            value: "",
-            error: 0,
-            validate: function () {
-                if (this.value === "") {
-                    this.error = 1;
-                    console.log("Name is empty");
-                    return 0;
-                } else {
-                    this.error = 0;
-                    return 1;
-                }
-            },
-            type: "name",
-            label: "Name",
-            placeholder: "Dimitris Sparagis",
-        },
         email: {
             value: "",
             error: 0,
@@ -59,24 +44,6 @@ export const SignUp = () => {
             label: "Password",
             placeholder: "5+ characters",
         },
-
-        confirmPassword: {
-            value: "",
-            error: 0,
-            validate: function () {
-                if (this.value === "") {
-                    this.error = 1;
-                    console.log("Confirm password is empty");
-                    return 0;
-                } else {
-                    this.error = 0;
-                    return 1;
-                }
-            },
-            type: "password",
-            label: "Confirm Password",
-            placeholder: "5+ characters",
-        },
     });
 
     const [submitted, setSubmitted] = useState(0);
@@ -100,16 +67,27 @@ export const SignUp = () => {
                 allValid = 0;
             }
         });
-        if (allValid) {
-            console.log("All valid");
-            const finalUser = {
-                name: user.name.value,
-                email: user.email.value,
-                password: user.password.value,
-                tasks: [],
-            }
-            localStorage.setItem(finalUser.email, JSON.stringify(finalUser));
-            navigate("/");
+        const localUser = JSON.parse(localStorage.getItem(user.email.value));
+        console.log("Local", localUser);
+        const finalUser = {
+            email: user.email.value,
+            password: user.password.value,
+        }
+        console.log("Final", finalUser);
+        const emailExists = localUser.email === finalUser.email;
+        const passwordExists = localUser.password === finalUser.password;
+        console.log(emailExists, passwordExists);
+        const userExists = emailExists && passwordExists;
+
+        if (userExists) {
+            console.log("User exists");
+            context.name = localUser.name;
+            context.email = localUser.email;
+            context.password = localUser.password;
+            navigate("/to-do");
+
+        } else {
+            console.log("User does not exist");
         }
     }
 
@@ -145,9 +123,9 @@ export const SignUp = () => {
     return (
         <div className={`relative min-h-screen flex items-center justify-center overflow-hidden`}>
             <div
-                className={`absolute w-[30rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1]`}></div>
+                className={`absolute w-[20rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1]`}></div>
             <div
-                className={`absolute w-[20rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1]  bottom-[10rem]`}></div>
+                className={`absolute w-[15rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1]  bottom-[15rem]`}></div>
 
             <section
                 style={{
@@ -158,8 +136,8 @@ export const SignUp = () => {
                      rounded-xl shadow-2xl p-10`}
             >
                 <header className={`flex flex-col items-center`}>
-                    <h1 className={`text-5xl font-bold`}>Sign Up</h1>
-                    <h2 className={`text-xl text-gray-400`}>Register your account</h2>
+                    <h1 className={`text-5xl font-bold`}>Log in</h1>
+                    <h2 className={`text-xl text-gray-400`}>Enter your credentials</h2>
                 </header>
                 <main>
                     <div className={`flex flex-col gap-4`}>
@@ -179,9 +157,9 @@ export const SignUp = () => {
                                 onClick={handleSubmit}
                                 className={`p-2 rounded-md bg-blue-300 hover:bg-white hover:scale-105 text-white shadow-2xl`}
                         >
-                            Sign Up
+                            Sign in
                         </button>
-                        <p>Already have an account? <Link to="/log-in" className={`bg-white px-5 py-2 rounded-lg`}>Log in</Link></p>
+                        <p>Don't have an account? <Link to="/sign-up" className={`bg-white px-5 py-2 rounded-lg`}>Sign up</Link></p>
                     </div>
                 </main>
             </section>

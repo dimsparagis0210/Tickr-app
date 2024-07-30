@@ -21,7 +21,7 @@ export const Input = (props) => {
             <label htmlFor={props.type} className={`text-gray-400`}>{props.label}</label>
             <input type={props.type} id={id} name={props.type}
                    className={`border border-2 ${props.error ? 'bg-red-300 border-red-500' : 'bg-white border-gray-400'} rounded-md p-2 `}
-                   onChange={handleChange} required={true}
+                   onChange={handleChange} required={true} placeholder={props.placeholder}
             />
         </div>
     )
