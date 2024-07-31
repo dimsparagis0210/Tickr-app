@@ -36,6 +36,7 @@ export const TodoList = (props) => {
                             Object.keys(tasks).map((index) => (
                                 <Task
                                     priority={tasks[index].priority}
+                                    key={index}
                                     name={tasks[index].name}
                                     notes={tasks[index].notes}
                                     status={tasks[index].status}
