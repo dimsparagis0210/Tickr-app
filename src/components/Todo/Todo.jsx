@@ -31,7 +31,24 @@ export const Todo = () => {
 
     //Getting user from local storage
     const user = JSON.parse(localStorage.getItem(context.email));
-    const [tasks, setTasks] = useState(user.tasks);
+    console.log("User", user);
+    let objectTasks = [];
+    Object.keys(user.tasks).map((item) => {
+        objectTasks.push(
+            {
+                id: user.tasks,
+                deadline: user.tasks[item].deadline,
+                description: user.tasks[item].description,
+                key: user.tasks[item].key,
+                name: user.tasks[item].name,
+                priority: user.tasks[item].priority,
+                startTime: user.tasks[item].startTime,
+                status: user.tasks[item].status,
+            }
+        );
+    });
+    console.log("Tasks", objectTasks);
+    const [tasks, setTasks] = useState(objectTasks);
 
     useEffect(() => {
         const newUser = {

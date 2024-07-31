@@ -73,16 +73,11 @@ export const Login = () => {
             email: user.email.value,
             password: user.password.value,
         }
-        console.log("Final", finalUser);
         userExists(finalUser.email).then((exists) => {
-            console.log("Exists", exists);
-            console.log("Context", context);
             if (exists) {
-                console.log("User exists");
                 localStorage.setItem(finalUser.email, JSON.stringify(context));
                 navigate("/to-do");
             } else {
-                console.log("User does not exist");
                 alert("User does not exist");
             }
         });
@@ -91,16 +86,13 @@ export const Login = () => {
     const db = useFirebase();
 
     const userExists = (email) => {
-        console.log("Fetching users");
         let found;
         return get(ref(db, `users/`)).then((snapshot) => {
             if (snapshot.exists()) {
-                console.log("Snapshot", snapshot.val());
                 const data = snapshot.val();
                 found = false;
                 Object.keys(data).map((user) => {
                     const currentEmail = data[user].email;
-                    console.log("Equals", currentEmail === email);
                     if (currentEmail === email) {
                         console.log("Found user");
                         found = true;
@@ -111,11 +103,9 @@ export const Login = () => {
                         context.tasks =  data[user].tasks || [];
                     }
                 })
-                console.log(snapshot.val());
             } else {
                 console.log("No data available");
             }
-            console.log("Found", found);
             return found;
         }).catch((error) => {
             console.error(error);
@@ -123,11 +113,7 @@ export const Login = () => {
     }
 
     const handleChange = ({name, value}) => {
-
         if (submitted) {
-            console.log("submitted");
-            console.log(user[name].validate(value));
-            console.log("Value", value);
             const valid = user[name].validate(value);
             setUser((prevState) => ({
                 ...prevState,
@@ -148,7 +134,6 @@ export const Login = () => {
                 }
             }));
         }
-        console.log(user);
     }
 
     return (

@@ -5,8 +5,6 @@ export const NewTaskInput = (props) => {
             value: event.target.value,
         })
     }
-
-    console.log(props.error);
     return (
         <div className={`flex flex-col gap-y-2 p-5`}>
             <label htmlFor={props.name} className={`text-black text-2xl`}>{props.label}</label>
