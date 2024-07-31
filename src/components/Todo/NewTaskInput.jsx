@@ -1,4 +1,4 @@
-export const TaskInput = (props) => {
+export const NewTaskInput = (props) => {
     const changeHandler = (event) => {
         props.onChange({
             name: props.name,

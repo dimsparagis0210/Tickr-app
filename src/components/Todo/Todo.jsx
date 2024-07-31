@@ -2,8 +2,9 @@ import {UserContext, useUserContext} from "../../store/user-context";
 import {useEffect, useState} from "react";
 import {TodoList} from "./TodoList";
 import {CompletedList} from "./CompletedList";
-import {TaskInput} from "./TaskInput";
+import {NewTaskInput} from "./NewTaskInput";
 import {colors, inputs, dummy_tasks} from "./data";
+import {type} from "@testing-library/user-event/dist/type";
 
 export const Todo = () => {
     //States
@@ -100,6 +101,14 @@ export const Todo = () => {
         );
     }
 
+    const deleteHandler = (task, index) => {
+        console.log("Entered delete handler", task, index);
+
+        setTasks((prevTasks) =>
+            prevTasks.filter((t, i) => i !== parseInt(index))
+        );
+    }
+
     const handleChange = ({name, value}) => {
         if (value === "") {
             console.log(`Please fill in the ${name} field`);
@@ -158,7 +167,7 @@ export const Todo = () => {
                         {
                             Object.keys(inputs).map((item, index) => {
                                 if (inputs[item].type !== "radio") {
-                                    return <TaskInput
+                                    return <NewTaskInput
                                         id={inputs[item].id}
                                         name={inputs[item].name}
                                         type={inputs[item].type}
@@ -230,10 +239,17 @@ export const Todo = () => {
                     <h1 className={`text-4xl text-gray-700 font-bold mb-4 p-10`}>Your Tasks</h1>
                     <div className={`flex`}>
                         <section className={`flex flex-col gap-y-10`}>
-                            <TodoList array={tasks} onComplete={(task, index) => completeHandler(task, index)}/>
+                            <TodoList
+                                array={tasks}
+                                onComplete={(task, index) => completeHandler(task, index)}
+                                onDelete={(task, index) => deleteHandler(task, index)}
+                            />
                         </section>
                         <section className={`flex flex-col gap-y-10 overflow-y-auto`}>
-                            <CompletedList array={tasks}/>
+                            <CompletedList
+                                array={tasks}
+                                onDelete={(task, index) => deleteHandler(task, index)}
+                            />
                         </section>
                     </div>
                 </main>
