@@ -74,8 +74,8 @@ export const Login = () => {
             password: user.password.value,
         }
         console.log("Final", finalUser);
-        const emailExists = localUser.email === finalUser.email;
-        const passwordExists = localUser.password === finalUser.password;
+        const emailExists = localUser?.email === finalUser.email;
+        const passwordExists = localUser?.password === finalUser.password;
         console.log(emailExists, passwordExists);
         const userExists = emailExists && passwordExists;
 
@@ -85,9 +85,9 @@ export const Login = () => {
             context.email = localUser.email;
             context.password = localUser.password;
             navigate("/to-do");
-
         } else {
             console.log("User does not exist");
+            alert("User does not exist");
         }
     }
 
