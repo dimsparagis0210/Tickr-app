@@ -1,6 +1,10 @@
 import {Link, Navigate, useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import {Input} from "./Input";
+import {initializeApp} from "firebase/app";
+import { getDatabase, ref, set, get, child, push, update } from "firebase/database";
+import {useFirebase} from "../../hooks/useFirebase";
+
 
 export const SignUp = () => {
     const [user, setUser] = useState({
@@ -108,13 +112,18 @@ export const SignUp = () => {
                 password: user.password.value,
                 tasks: [],
             }
-            localStorage.getItem(finalUser.email);
-            if (localStorage.getItem(finalUser.email)) {
-                alert("User already exists");
-            } else {
-                localStorage.setItem(finalUser.email, JSON.stringify(finalUser));
-                navigate("/");
-            }
+            console.log("User exists",userExists(finalUser.email));
+            // saveUser(finalUser);
+            userExists(finalUser.email).then((exists) => {
+                if (exists) {
+                    alert("User already exists");
+                } else {
+                    localStorage.setItem(finalUser.email, JSON.stringify(finalUser));
+                    saveUser(finalUser).then(() => {
+                        navigate("/");
+                    });
+                }
+            });
         }
     }
 
@@ -147,6 +156,50 @@ export const SignUp = () => {
         console.log(user);
     }
 
+    const db = useFirebase();
+
+    const userExists = (email) => {
+        console.log("Fetching users");
+        let found;
+        return get(ref(db, `users/`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log("Snapshot", snapshot.val());
+                const data = snapshot.val();
+                found = false;
+                data.map((user) => {
+                    console.log(user);
+                    console.log(user.email);
+                    console.log(email);
+                    console.log(user.email === email);
+                    if (user.email === email) {
+                        found = true;
+                    }
+                })
+                console.log(snapshot.val());
+            } else {
+                console.log("No data available");
+            }
+            console.log("Found", found);
+            return found;
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
+
+    const saveUser = (user) => {
+        const newUserKey = push(child(ref(db), 'users')).key;
+        const updates = {};
+        const newUserPost = {
+            username: user.name,
+            email: user.email,
+            password: user.password,
+            tasks: [],
+        }
+        updates[`/users/${newUserKey}`] =  newUserPost;
+
+        return update(ref(db), updates);
+    }
+
     return (
         <div className={`relative min-h-screen flex items-center justify-center overflow-hidden`}>
             <div
@@ -173,7 +226,8 @@ export const SignUp = () => {
                                 return (
                                     <Input key={index} onChange={({name, value}) => handleChange({name, value})}
                                            type={user[item].type}
-                                           label={user[item].label} error={user[item].error} placeholder={item.placeholder}/>
+                                           label={user[item].label} error={user[item].error}
+                                           placeholder={item.placeholder}/>
                                 )
                             })
                         }
@@ -186,7 +240,8 @@ export const SignUp = () => {
                         >
                             Sign Up
                         </button>
-                        <p>Already have an account? <Link to="/log-in" className={`bg-white px-5 py-2 rounded-lg`}>Log in</Link></p>
+                        <p>Already have an account? <Link to="/log-in" className={`bg-white px-5 py-2 rounded-lg`}>Log
+                            in</Link></p>
                     </div>
                 </main>
             </section>

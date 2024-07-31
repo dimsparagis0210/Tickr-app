@@ -2,6 +2,8 @@ import {Link, Navigate, useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import {Input} from "./Input";
 import {useUserContext} from "../../store/user-context";
+import {useFirebase} from "../../hooks/useFirebase";
+import {get, ref} from "firebase/database";
 
 export const Login = () => {
     const context = useUserContext();
@@ -67,28 +69,57 @@ export const Login = () => {
                 allValid = 0;
             }
         });
-        const localUser = JSON.parse(localStorage.getItem(user.email.value));
-        console.log("Local", localUser);
         const finalUser = {
             email: user.email.value,
             password: user.password.value,
         }
         console.log("Final", finalUser);
-        const emailExists = localUser?.email === finalUser.email;
-        const passwordExists = localUser?.password === finalUser.password;
-        console.log(emailExists, passwordExists);
-        const userExists = emailExists && passwordExists;
+        userExists(finalUser.email).then((exists) => {
+            console.log("Exists", exists);
+            console.log("Context", context);
+            if (exists) {
+                console.log("User exists");
+                localStorage.setItem(finalUser.email, JSON.stringify(context));
+                navigate("/to-do");
+            } else {
+                console.log("User does not exist");
+                alert("User does not exist");
+            }
+        });
+    }
 
-        if (userExists) {
-            console.log("User exists");
-            context.name = localUser.name;
-            context.email = localUser.email;
-            context.password = localUser.password;
-            navigate("/to-do");
-        } else {
-            console.log("User does not exist");
-            alert("User does not exist");
-        }
+    const db = useFirebase();
+
+    const userExists = (email) => {
+        console.log("Fetching users");
+        let found;
+        return get(ref(db, `users/`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log("Snapshot", snapshot.val());
+                const data = snapshot.val();
+                found = false;
+                Object.keys(data).map((user) => {
+                    const currentEmail = data[user].email;
+                    console.log("Equals", currentEmail === email);
+                    if (currentEmail === email) {
+                        console.log("Found user");
+                        found = true;
+                        context.id = user;
+                        context.name = data[user].name;
+                        context.email =  data[user].email;
+                        context.password =  data[user].password;
+                        context.tasks =  data[user].tasks || [];
+                    }
+                })
+                console.log(snapshot.val());
+            } else {
+                console.log("No data available");
+            }
+            console.log("Found", found);
+            return found;
+        }).catch((error) => {
+            console.error(error);
+        });
     }
 
     const handleChange = ({name, value}) => {

@@ -1,11 +1,11 @@
 import {createContext, useContext, useState} from "react";
 
 export const UserContext = createContext({
+    id: "",
     name: "",
     email: "",
     password: "",
     tasks: [],
-
 });
 
 export const useUserContext = () => {

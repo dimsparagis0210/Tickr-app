@@ -5,6 +5,7 @@ import {Home} from "./components/Home";
 import {UserContext} from "./store/user-context";
 import {useState} from "react";
 import {Todo} from "./components/Todo/Todo";
+import {initializeApp} from "firebase/app";
 
 
 function App() {

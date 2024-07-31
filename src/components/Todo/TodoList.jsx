@@ -43,7 +43,8 @@ export const TodoList = (props) => {
                                     startTime={tasks[index].startTime}
                                     currentTime={time}
                                     onComplete={() => {
-                                        props.onComplete(tasks[index]);
+                                        tasks[index].status = "completed";
+                                        props.onComplete(tasks[index], index);
                                     }}
                                     onDelete={() => {
                                         props.onDelete(tasks[index], index);

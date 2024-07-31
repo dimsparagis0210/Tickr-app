@@ -6,11 +6,16 @@ import {NewTaskInput} from "./NewTaskInput";
 import {colors, inputs, dummy_tasks} from "./data";
 import {type} from "@testing-library/user-event/dist/type";
 import {useNavigate} from "react-router-dom";
+import {useLoggedInUser} from "../../hooks/useLoggedInUser";
+import {useFirebase} from "../../hooks/useFirebase";
+import {child, push, ref, update} from "firebase/database";
 
 export const Todo = () => {
     //States
     const [taskWindowOpen, setTaskWindowOpen] = useState(false);
     const navigate = useNavigate();
+    const db = useFirebase();
+    const context = useUserContext();
     const [submitted, setSubmitted] = useState(false);
     const [input, setInput] = useState({
         name: "",
@@ -25,9 +30,8 @@ export const Todo = () => {
     });
 
     //Getting user from local storage
-    const user = JSON.parse(localStorage.getItem("d@gmail.com"));
+    const user = JSON.parse(localStorage.getItem(context.email));
     const [tasks, setTasks] = useState(user.tasks);
-    console.log(user);
 
     useEffect(() => {
         const newUser = {
@@ -41,6 +45,15 @@ export const Todo = () => {
     const submitTask = () => {
         let areAllValid = 1;
         setSubmitted(true);
+        const newTask = {
+            key: "",
+            name: input.name,
+            description: input.description,
+            deadline: input.deadline,
+            priority: input.priority,
+            status: "todo",
+            startTime: `${new Date().getHours()}:${new Date().getMinutes()}`,
+        }
         Object.keys(input).map((item) => {
             if (input[item] === "") {
                 setInput((prevState) => {
@@ -61,55 +74,64 @@ export const Todo = () => {
         if (!areAllValid) {
             console.log("Please fill in all the fields");
         } else {
-            if (tasks === undefined || tasks.length === 0) {
-                setTasks([{
-                    name: input.name,
-                    description: input.description,
-                    deadline: input.deadline,
-                    priority: input.priority,
-                    startTime: `${new Date().getHours()}:${new Date().getMinutes()}`,
-                    status: "todo",
-                }])
-            } else {
+            saveTask(context.id, newTask).then((key) => {
+                newTask.key = key;
                 setTasks((prevState) => {
                     return [
                         ...prevState,
-                        {
-                            name: input.name,
-                            description: input.description,
-                            deadline: input.deadline,
-                            priority: input.priority,
-                            status: "todo",
-                        }
+                        newTask,
                     ]
                 });
+            }).then(() => {
                 const newUser = {
                     ...user,
-                    tasks: [
-                        ...user.tasks,
-                        tasks,
-                    ],
+                    tasks: tasks,
                 }
-                console.log(newUser);
                 localStorage.setItem(user.email, JSON.stringify(newUser));
-            }
+            });
         }
         console.log("Task submitted");
     }
 
+    const saveTask = (uid, task) => {
+        return new Promise((resolve, reject) => {
+            const newTaskKey = push(ref(db, `users/${uid}/tasks`)).key;
+            const updates = {};
+            updates[`users/${uid}/tasks/${newTaskKey}`] = task;
+
+            update(ref(db), updates)
+                .then(() => {
+                    resolve(newTaskKey);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    }
+
     const completeHandler = (task, index) => {
-        console.log("Completed", task);
         setTasks((prevTasks) =>
-            prevTasks.map((t, i) => (i === index ? { ...t, task} : t))
+            prevTasks.map((t, i) => (i === parseInt(index) ? {...t, task} : t))
         );
+        const updates = {};
+        updates[`users/${context.id}/tasks/${task.key}`] = {...task, status: "completed"};
+
+        return update(ref(db), updates).then(() => {
+            console.log("Task Completed");
+        });
+
     }
 
     const deleteHandler = (task, index) => {
-        console.log("Entered delete handler", task, index);
-
         setTasks((prevTasks) =>
             prevTasks.filter((t, i) => i !== parseInt(index))
         );
+        const updates = {};
+        updates[`users/${context.id}/tasks/${task.key}`] = null;
+
+        return update(ref(db), updates).then(() => {
+            console.log("Task Deleted");
+        });
     }
 
     const handleChange = ({name, value}) => {
@@ -143,7 +165,7 @@ export const Todo = () => {
     }
 
     const logOutHandler = () => {
-        localStorage.removeItem("d@gmail.com");
+        localStorage.removeItem(context.email);
         console.log("Logged out");
         navigate("/log-in");
     }
