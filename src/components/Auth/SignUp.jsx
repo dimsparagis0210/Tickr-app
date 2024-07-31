@@ -108,8 +108,13 @@ export const SignUp = () => {
                 password: user.password.value,
                 tasks: [],
             }
-            localStorage.setItem(finalUser.email, JSON.stringify(finalUser));
-            navigate("/");
+            localStorage.getItem(finalUser.email);
+            if (localStorage.getItem(finalUser.email)) {
+                alert("User already exists");
+            } else {
+                localStorage.setItem(finalUser.email, JSON.stringify(finalUser));
+                navigate("/");
+            }
         }
     }
 
