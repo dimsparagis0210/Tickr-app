@@ -18,6 +18,7 @@ export const TodoList = (props) => {
         }, 1000);
         return () => clearInterval(interval);
     });
+
     return (
         <div className={`h-full`}>
             <h1 className={`text-2xl text-gray-500 self-start px-5`}>To-Do</h1>
@@ -38,16 +39,13 @@ export const TodoList = (props) => {
                                     name={tasks[index].name}
                                     notes={tasks[index].notes}
                                     status={tasks[index].status}
-                                    time={tasks[index].time}
+                                    deadline={tasks[index].deadline}
+                                    startTime={tasks[index].startTime}
                                     currentTime={time}
                                     onComplete={() => {
-                                        tasks[index].status = "completed";
-                                        console.log("Completed");
                                         props.onComplete(tasks[index]);
                                     }}
                                     onDelete={() => {
-                                        console.log("Delete ToDo List");
-                                        console.log(tasks[index], index);
                                         props.onDelete(tasks[index], index);
                                     }}
                                 />

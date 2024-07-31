@@ -5,10 +5,12 @@ import {CompletedList} from "./CompletedList";
 import {NewTaskInput} from "./NewTaskInput";
 import {colors, inputs, dummy_tasks} from "./data";
 import {type} from "@testing-library/user-event/dist/type";
+import {useNavigate} from "react-router-dom";
 
 export const Todo = () => {
     //States
     const [taskWindowOpen, setTaskWindowOpen] = useState(false);
+    const navigate = useNavigate();
     const [submitted, setSubmitted] = useState(false);
     const [input, setInput] = useState({
         name: "",
@@ -65,6 +67,7 @@ export const Todo = () => {
                     description: input.description,
                     deadline: input.deadline,
                     priority: input.priority,
+                    startTime: `${new Date().getHours()}:${new Date().getMinutes()}`,
                     status: "todo",
                 }])
             } else {
@@ -139,12 +142,25 @@ export const Todo = () => {
         });
     }
 
+    const logOutHandler = () => {
+        localStorage.removeItem("d@gmail.com");
+        console.log("Logged out");
+        navigate("/log-in");
+    }
+
     return (
         <div className={`relative min-h-screen flex flex-col items-center justify-center`}>
             <header className={`p-10 flex flex-col items-center`}>
                 <h1 className={`text-6xl text-gray-500`}>Welcome back Dimitris</h1>
                 <h3 className={`text-2xl text-gray-400`}>Write down your tasks</h3>
             </header>
+            <button className={`absolute top-10 left-10 bg-gradient-to-r from-red-50 to-zinc-100 h-fit px-5 py-4 
+                                        rounded-xl shadow-xl hover:from-red-100 hover:to-zinc-200 
+                                        hover:shadow-2xl w-fit`}
+                    onClick={logOutHandler}
+            >
+                Log Out
+            </button>
             <div
                 className={`absolute w-[34rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1] mt-[12rem]`}></div>
             <div
