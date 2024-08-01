@@ -103,6 +103,12 @@ export const Todo = () => {
                     tasks: tasks,
                 }
                 localStorage.setItem(user.email, JSON.stringify(newUser));
+                setInput({
+                    name: "",
+                    description: "",
+                    deadline: "",
+                    priority: "",
+                })
             });
         }
         console.log("Task submitted");
@@ -248,6 +254,7 @@ export const Todo = () => {
                                         label={inputs[item].label}
                                         placeholder={inputs[item].placeholder}
                                         error={error[item]}
+                                        value={input[item]}
                                         key={index}
                                         onChange={({name, value}) => {
                                             handleChange({name, value})
