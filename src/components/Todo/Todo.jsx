@@ -3,12 +3,10 @@ import {useEffect, useState} from "react";
 import {TodoList} from "./TodoList";
 import {CompletedList} from "./CompletedList";
 import {NewTaskInput} from "./NewTaskInput";
-import {colors, inputs, dummy_tasks} from "./data";
-import {type} from "@testing-library/user-event/dist/type";
+import {colors, inputs} from "../../data/data";
 import {useNavigate} from "react-router-dom";
-import {useLoggedInUser} from "../../hooks/useLoggedInUser";
 import {useFirebase} from "../../hooks/useFirebase";
-import {child, push, ref, update} from "firebase/database";
+import {push, ref, update} from "firebase/database";
 
 export const Todo = () => {
     //States
@@ -136,7 +134,18 @@ export const Todo = () => {
         return update(ref(db), updates).then(() => {
             console.log("Task Completed");
         });
+    }
 
+    const redoHandler = (task, index) => {
+        setTasks((prevTasks) =>
+            prevTasks.map((t, i) => (i === parseInt(index) ? {...t, task} : t))
+        );
+        const updates = {};
+        updates[`users/${context.id}/tasks/${task.key}`] = {...task, status: "todo"};
+
+        return update(ref(db), updates).then(() => {
+            console.log("Task Reinitialized");
+        });
     }
 
     const deleteHandler = (task, index) => {
@@ -190,33 +199,37 @@ export const Todo = () => {
     return (
         <div className={`relative min-h-screen flex flex-col items-center justify-center`}>
             <header className={`p-10 flex flex-col items-center`}>
-                <h1 className={`text-6xl text-gray-500`}>Welcome back Dimitris</h1>
-                <h3 className={`text-2xl text-gray-400`}>Write down your tasks</h3>
+                <h1 className={`text-4xl md:text-6xl text-gray-500`}>Welcome back Dimitris</h1>
+                <h3 className={`text-xl md:text-2xl text-gray-400`}>Write down your tasks</h3>
             </header>
-            <button className={`absolute top-10 left-10 bg-gradient-to-r from-red-50 to-zinc-100 h-fit px-5 py-4 
+            <button className={`absolute  bg-gradient-to-r from-red-50 to-zinc-100 h-fit 
                                         rounded-xl shadow-xl hover:from-red-100 hover:to-zinc-200 
-                                        hover:shadow-2xl w-fit`}
+                                        hover:shadow-2xl w-fit text-sm md:text-md
+                                        px-4 py-3 md:px-5 md:py-4 
+                                        top-5 left-5 md:top-10 md:left-10
+                              `}
                     onClick={logOutHandler}
             >
                 Log Out
             </button>
             <div
-                className={`absolute w-[34rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1] mt-[12rem]`}></div>
+                className={`absolute w-[24rem] md:w-[34rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1] mt-[12rem]`}></div>
             <div
-                className={`absolute w-[24rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1]  bottom-[5rem]`}>
+                className={`absolute w-[14rem] md:w-[24rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1]  bottom-[10rem]`}>
             </div>
             {
                 taskWindowOpen &&
                 <div
                     className={`z-10 self-end absolute rounded-xl shadow-xl right-10 bg-gradient-to-tl from-violet-600 to-yellow-300 flex flex-col p-5`}>
-                    <button className={`bg-gradient-to-r from-red-50 to-zinc-100 h-fit px-5 py-4 
+                    <button className={`bg-gradient-to-r from-red-50 to-zinc-100 h-fit 
                                         rounded-xl shadow-xl hover:from-red-100 hover:to-zinc-200 
-                                        hover:shadow-2xl w-fit self-end`
+                                        hover:shadow-2xl w-fit self-end
+                                        px-3 py-3 md:px-5 md:py-4 `
                     } onClick={() => setTaskWindowOpen(false)}>
                         Close
                     </button>
                     <header>
-                        <h1 className={`text-3xl font-bold text-white p-10`}>Create a new task</h1>
+                        <h1 className={`text-xl md:text-3xl font-bold text-white p-10`}>Create a new task</h1>
                     </header>
                     <main>
                         {
@@ -235,17 +248,17 @@ export const Todo = () => {
                                         }}
                                     />
                                 } else {
-                                    return <div className={`flex flex-col gap-y-2 items-start p-5`} key={index}>
-                                        <label htmlFor={"priority"} className={`text-black text-2xl`}>Priority</label>
+                                    return <div className={`flex flex-col gap-y-2 items-start p-2 md:p-5`} key={index}>
+                                        <label htmlFor={"priority"} className={`text-white text-lg md:text-2xl`}>Priority</label>
                                         {
                                             Object.keys(colors).map((color, index) => {
                                                 return (
-                                                    <div className={`flex gap-4`} key={index}>
+                                                    <div className={`flex gap-4 text-${colors[index]}`} key={index}>
                                                         <input type={"radio"} id={`radio`} name={"radio"}
                                                                value={color}
                                                                className={`border border-2 ${0 ?
                                                                    'bg-red-300 border-red-500' :
-                                                                   'bg-white border-gray-400'} rounded-md p-2 `}
+                                                                   'bg-white border-gray-400'} rounded-md p-2`}
                                                                required={true}
                                                                onClick={() => {
                                                                    setInput((prevState) => ({
@@ -279,9 +292,10 @@ export const Todo = () => {
                      backdropFilter: `blur(10px)`,
                  }}
             >
-                <button className={`bg-gradient-to-r from-red-50 to-zinc-100 h-fit px-5 py-4 
+                <button className={`bg-gradient-to-r from-red-50 to-zinc-100 h-fit 
                                     rounded-xl shadow-xl absolute right-10 top-5
                                     hover:from-red-100 hover:to-zinc-200 hover:shadow-2xl
+                                    px-4 py-3 md:px-5 md:py-4 
                                     `}
                         onClick={() => {
                             setTaskWindowOpen(true)
@@ -289,9 +303,9 @@ export const Todo = () => {
                 >
                     Create
                 </button>
-                <main className={`flex flex-col items-center w-[50rem] h-[40rem] overflow-scroll`}>
+                <main className={`flex flex-col items-center w-[30rem] h-[30rem] md:w-[50rem] md:h-[40rem] overflow-scroll`}>
 
-                    <h1 className={`text-4xl text-gray-700 font-bold mb-4 p-10`}>Your Tasks</h1>
+                    <h1 className={`text-2xl md:text-4xl text-gray-700 font-bold mb-4 p-10`}>Your Tasks</h1>
                     <div className={`flex`}>
                         <section className={`flex flex-col gap-y-10`}>
                             <TodoList
@@ -304,6 +318,7 @@ export const Todo = () => {
                             <CompletedList
                                 array={tasks}
                                 onDelete={(task, index) => deleteHandler(task, index)}
+                                onRedo={(task, index) => redoHandler(task, index)}
                             />
                         </section>
                     </div>

@@ -203,16 +203,16 @@ export const SignUp = () => {
     return (
         <div className={`relative min-h-screen flex items-center justify-center overflow-hidden`}>
             <div
-                className={`absolute w-[30rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1]`}></div>
+                className={`absolute w-[20rem] lg:w-[30rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1]`}></div>
             <div
-                className={`absolute w-[20rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1]  bottom-[10rem]`}></div>
+                className={`absolute w-[10rem] lg:w-[20rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1] bottom-[17rem] lg:bottom-[10rem]`}></div>
 
             <section
                 style={{
                     backdropFilter: 'blur(10px)',
                     background: 'rgba(0, 0, 0, 0.1)'
                 }}
-                className={`w-[40rem] h-fit flex flex-col justify-center items-center gap-y-10 
+                className={`w-[30rem] lg:w-[40rem] h-fit flex flex-col justify-center items-center gap-y-10 
                      rounded-xl shadow-2xl p-10`}
             >
                 <header className={`flex flex-col items-center`}>
