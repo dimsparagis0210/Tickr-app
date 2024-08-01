@@ -73,14 +73,21 @@ export const Login = () => {
             email: user.email.value,
             password: user.password.value,
         }
-        userExists(finalUser.email).then((exists) => {
-            if (exists) {
-                localStorage.setItem(finalUser.email, JSON.stringify(context));
-                navigate("/to-do");
-            } else {
-                alert("User does not exist");
-            }
-        });
+        if(allValid) {
+            userExists(finalUser.email).then((exists) => {
+                if (exists) {
+                    if (finalUser.password !== context.password) {
+                        alert("Incorrect password");
+                        return;
+                    } else {
+                        localStorage.setItem(finalUser.email, JSON.stringify(context));
+                        navigate("/to-do");
+                    }
+                } else {
+                    alert("User does not exist");
+                }
+            });
+        }
     }
 
     const db = useFirebase();
@@ -141,14 +148,14 @@ export const Login = () => {
             <div
                 className={`absolute w-[20rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1]`}></div>
             <div
-                className={`absolute w-[15rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1]  bottom-[15rem]`}></div>
+                className={`absolute w-[15rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1]  bottom-[17rem]`}></div>
 
             <section
                 style={{
                     backdropFilter: 'blur(10px)',
                     background: 'rgba(0, 0, 0, 0.1)'
                 }}
-                className={`w-[40rem] h-fit flex flex-col justify-center items-center gap-y-10 
+                className={`w-[30rem] lg:w-[40rem] h-fit flex flex-col justify-center items-center gap-y-10 
                      rounded-xl shadow-2xl p-10`}
             >
                 <header className={`flex flex-col items-center`}>
