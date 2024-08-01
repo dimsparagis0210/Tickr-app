@@ -8,7 +8,6 @@ export const CompletedList = (props) => {
     const [tasks, setTasks] = useState(props.array);
 
     useEffect(() => {
-        console.log("Completed array changed")
         const filteredTasks = props.array.filter((task) => task.status === "completed");
         setTasks(filteredTasks);
     }, [props.array]);

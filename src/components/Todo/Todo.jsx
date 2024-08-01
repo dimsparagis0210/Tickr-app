@@ -6,7 +6,7 @@ import {NewTaskInput} from "./NewTaskInput";
 import {colors, inputs} from "../../data/data";
 import {useNavigate} from "react-router-dom";
 import {useFirebase} from "../../hooks/useFirebase";
-import {push, ref, update} from "firebase/database";
+import {push, ref, set, update} from "firebase/database";
 
 export const Todo = () => {
     //States
@@ -29,7 +29,6 @@ export const Todo = () => {
 
     //Getting user from local storage
     const user = JSON.parse(localStorage.getItem(context.email));
-    console.log("User", user);
     let objectTasks = [];
     Object.keys(user.tasks).map((item) => {
         objectTasks.push(
@@ -45,7 +44,6 @@ export const Todo = () => {
             }
         );
     });
-    console.log("Tasks", objectTasks);
     const [tasks, setTasks] = useState(objectTasks);
 
     useEffect(() => {
@@ -59,6 +57,7 @@ export const Todo = () => {
     //Function for the task submission
     const submitTask = () => {
         let areAllValid = 1;
+        console.log("Submitting task", input);
         setSubmitted(true);
         const newTask = {
             key: "",
@@ -103,6 +102,13 @@ export const Todo = () => {
                     tasks: tasks,
                 }
                 localStorage.setItem(user.email, JSON.stringify(newUser));
+            }).then(() => {
+                setInput({
+                    name: "",
+                    description: "",
+                    deadline: "",
+                    priority: "",
+                })
             });
         }
         console.log("Task submitted");
