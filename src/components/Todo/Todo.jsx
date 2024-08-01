@@ -220,7 +220,11 @@ export const Todo = () => {
             {
                 taskWindowOpen &&
                 <div
-                    className={`z-10 self-end absolute rounded-xl shadow-xl right-10 bg-gradient-to-tl from-violet-600 to-yellow-300 flex flex-col p-5`}>
+                    className={`z-10 self-end absolute rounded-xl shadow-2xl right-10 bg-gradient-to-tl from-violet-600 to-yellow-300 flex flex-col p-5`}
+                    style={{
+                        boxShadow: 'inset 0px 0px 0px 6px rgba(255,255,255,0.6)',
+                    }}
+                >
                     <button className={`bg-gradient-to-r from-red-50 to-zinc-100 h-fit 
                                         rounded-xl shadow-xl hover:from-red-100 hover:to-zinc-200 
                                         hover:shadow-2xl w-fit self-end
@@ -229,7 +233,7 @@ export const Todo = () => {
                         Close
                     </button>
                     <header>
-                        <h1 className={`text-xl md:text-3xl font-bold text-white p-10`}>Create a new task</h1>
+                        <h1 className={`text-xl md:text-3xl text-white p-10`}>Create a new task</h1>
                     </header>
                     <main>
                         {
