@@ -1,17 +1,23 @@
 import {UserContext, useUserContext} from "../../store/user-context";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {TodoList} from "./TodoList";
 import {CompletedList} from "./CompletedList";
 import {NewTaskInput} from "./NewTaskInput";
 import {colors, inputs} from "../../data/data";
 import {useNavigate} from "react-router-dom";
 import {useFirebase} from "../../hooks/useFirebase";
-import {push, ref, set, update} from "firebase/database";
+import {push, ref, update} from "firebase/database";
 
 export const Todo = () => {
     //States
     const [taskWindowOpen, setTaskWindowOpen] = useState(false);
+    const [selectedRadio, setSelectedRadio] = useState(null);
     const navigate = useNavigate();
+    const [radio, setRadio] = useState({
+        high: false,
+        medium: false,
+        low: false,
+    });
     const db = useFirebase();
     const context = useUserContext();
     const [submitted, setSubmitted] = useState(false);
@@ -27,8 +33,16 @@ export const Todo = () => {
         deadline: 0,
     });
 
+    useEffect(() => {
+        if (submitted) {
+            setSelectedRadio(null); // Clear the selected option
+            setSubmitted(false); // Reset submitted flag
+        }
+    }, [submitted])
+
     //Getting user from local storage
     const user = JSON.parse(localStorage.getItem(context.email));
+    console.log("User", user);
     let objectTasks = [];
     Object.keys(user.tasks).map((item) => {
         objectTasks.push(
@@ -44,6 +58,7 @@ export const Todo = () => {
             }
         );
     });
+    console.log("Tasks", objectTasks);
     const [tasks, setTasks] = useState(objectTasks);
 
     useEffect(() => {
@@ -57,7 +72,6 @@ export const Todo = () => {
     //Function for the task submission
     const submitTask = () => {
         let areAllValid = 1;
-        console.log("Submitting task", input);
         setSubmitted(true);
         const newTask = {
             key: "",
@@ -69,7 +83,7 @@ export const Todo = () => {
             startTime: `${new Date().getHours()}:${new Date().getMinutes()}`,
         }
         Object.keys(input).map((item) => {
-            if (input[item] === "") {
+            if (input[item] === "" && item !== "description") {
                 setInput((prevState) => {
                     return {
                         ...prevState,
@@ -102,13 +116,13 @@ export const Todo = () => {
                     tasks: tasks,
                 }
                 localStorage.setItem(user.email, JSON.stringify(newUser));
-            }).then(() => {
                 setInput({
                     name: "",
                     description: "",
                     deadline: "",
                     priority: "",
-                })
+                });
+                setRadio(false);
             });
         }
         console.log("Task submitted");
@@ -132,7 +146,7 @@ export const Todo = () => {
 
     const completeHandler = (task, index) => {
         setTasks((prevTasks) =>
-            prevTasks.map((t, i) => (i === parseInt(index) ? {...t, task} : t))
+            prevTasks.map((t, i) => (t.key === task.key ? task : t))
         );
         const updates = {};
         updates[`users/${context.id}/tasks/${task.key}`] = {...task, status: "completed"};
@@ -142,9 +156,9 @@ export const Todo = () => {
         });
     }
 
-    const redoHandler = (task, index) => {
+    const redoHandler = (task) => {
         setTasks((prevTasks) =>
-            prevTasks.map((t, i) => (i === parseInt(index) ? {...t, task} : t))
+            prevTasks.map((t, i) => (t.key === task.key ? task : t))
         );
         const updates = {};
         updates[`users/${context.id}/tasks/${task.key}`] = {...task, status: "todo"};
@@ -154,9 +168,11 @@ export const Todo = () => {
         });
     }
 
-    const deleteHandler = (task, index) => {
+    const deleteHandler = (task) => {
+        console.log("Task", task);
+        console.log("Id", task.key);
         setTasks((prevTasks) =>
-            prevTasks.filter((t, i) => i !== parseInt(index))
+            prevTasks.filter((t, i) => t.key !== task.key)
         );
         const updates = {};
         updates[`users/${context.id}/tasks/${task.key}`] = null;
@@ -221,7 +237,7 @@ export const Todo = () => {
             <div
                 className={`absolute w-[24rem] md:w-[34rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1] mt-[12rem]`}></div>
             <div
-                className={`absolute w-[14rem] md:w-[24rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1]  bottom-[10rem]`}>
+                className={`absolute w-[14rem] md:w-[24rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1] mt-[21rem]`}>
             </div>
             {
                 taskWindowOpen &&
@@ -252,6 +268,7 @@ export const Todo = () => {
                                         label={inputs[item].label}
                                         placeholder={inputs[item].placeholder}
                                         error={error[item]}
+                                        value={input[item]}
                                         key={index}
                                         onChange={({name, value}) => {
                                             handleChange({name, value})
@@ -266,7 +283,8 @@ export const Todo = () => {
                                                     <div className={`flex gap-4 text-${colors[index]}`} key={index}>
                                                         <input type={"radio"} id={`radio`} name={"radio"}
                                                                value={color}
-                                                               className={`border border-2 ${0 ?
+                                                               checked={selectedRadio === color}
+                                                               className={`radioBtn border border-2 ${0 ?
                                                                    'bg-red-300 border-red-500' :
                                                                    'bg-white border-gray-400'} rounded-md p-2`}
                                                                required={true}
@@ -275,6 +293,9 @@ export const Todo = () => {
                                                                        ...prevState,
                                                                        priority: colors[color],
                                                                    }))
+                                                               }}
+                                                               onChange={() => {
+                                                                     setSelectedRadio(color);
                                                                }}
                                                         />
                                                         <label htmlFor="name">{color}</label>
