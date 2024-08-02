@@ -1,5 +1,5 @@
-import {Link, Navigate, useNavigate} from "react-router-dom";
-import {useEffect, useRef, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {useState} from "react";
 import {Input} from "./Input";
 import {useUserContext} from "../../store/user-context";
 import {useFirebase} from "../../hooks/useFirebase";
@@ -7,6 +7,7 @@ import {get, ref} from "firebase/database";
 
 export const Login = () => {
     const context = useUserContext();
+    // User input state
     const [user, setUser] = useState({
         email: {
             value: "",
@@ -53,9 +54,10 @@ export const Login = () => {
     const navigate = useNavigate();
 
     const handleSubmit = () => {
-        console.log(user);
         setSubmitted(1);
-        let allValid = 1;
+        let allFieldsValid = 1;
+
+        //Mapping through the user object to validate each field
         Object.keys(user).map((item) => {
             const valid = user[item].validate();
             if (!valid) {
@@ -66,14 +68,14 @@ export const Login = () => {
                         error: 1,
                     }
                 }));
-                allValid = 0;
+                allFieldsValid = 0;
             }
         });
         const finalUser = {
             email: user.email.value,
             password: user.password.value,
         }
-        if(allValid) {
+        if(allFieldsValid) {
             userExists(finalUser.email).then((exists) => {
                 if (exists) {
                     if (finalUser.password !== context.password) {
@@ -90,8 +92,10 @@ export const Login = () => {
         }
     }
 
+    // Hook to get the firebase database
     const db = useFirebase();
 
+    // Function to check if the user exists in the database
     const userExists = (email) => {
         let found;
         return get(ref(db, `users/`)).then((snapshot) => {
@@ -119,7 +123,10 @@ export const Login = () => {
         });
     }
 
+    // Function to handle the change in the input fields
     const handleChange = ({name, value}) => {
+        // If the form has been submitted, validate the input fields
+        // Else just update the value
         if (submitted) {
             const valid = user[name].validate(value);
             setUser((prevState) => ({
@@ -148,7 +155,7 @@ export const Login = () => {
             <div
                 className={`absolute w-[20rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1]`}></div>
             <div
-                className={`absolute w-[15rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1]  bottom-[17rem]`}></div>
+                className={`absolute w-[15rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1] mt-[10rem]`}></div>
 
             <section
                 style={{
