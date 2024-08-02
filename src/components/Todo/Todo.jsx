@@ -146,7 +146,7 @@ export const Todo = () => {
 
     const completeHandler = (task, index) => {
         setTasks((prevTasks) =>
-            prevTasks.map((t, i) => (i === parseInt(index) ? task : t))
+            prevTasks.map((t, i) => (t.key === task.key ? task : t))
         );
         const updates = {};
         updates[`users/${context.id}/tasks/${task.key}`] = {...task, status: "completed"};
