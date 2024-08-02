@@ -132,7 +132,7 @@ export const Todo = () => {
 
     const completeHandler = (task, index) => {
         setTasks((prevTasks) =>
-            prevTasks.map((t, i) => (i === parseInt(index) ? {...t, task} : t))
+            prevTasks.map((t, i) => (i === parseInt(index) ? task : t))
         );
         const updates = {};
         updates[`users/${context.id}/tasks/${task.key}`] = {...task, status: "completed"};
@@ -142,9 +142,9 @@ export const Todo = () => {
         });
     }
 
-    const redoHandler = (task, index) => {
+    const redoHandler = (task) => {
         setTasks((prevTasks) =>
-            prevTasks.map((t, i) => (i === parseInt(index) ? {...t, task} : t))
+            prevTasks.map((t, i) => (t.key === task.key ? task : t))
         );
         const updates = {};
         updates[`users/${context.id}/tasks/${task.key}`] = {...task, status: "todo"};
@@ -223,7 +223,7 @@ export const Todo = () => {
             <div
                 className={`absolute w-[24rem] md:w-[34rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1] mt-[12rem]`}></div>
             <div
-                className={`absolute w-[14rem] md:w-[24rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1]  bottom-[10rem]`}>
+                className={`absolute w-[14rem] md:w-[24rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1] mt-[21rem]`}>
             </div>
             {
                 taskWindowOpen &&
