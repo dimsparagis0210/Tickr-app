@@ -3,31 +3,6 @@ import {useState} from "react";
 export const Task = (props) => {
     const [hover, setHover] = useState(false);
 
-    const calculateDeadline = () => {
-        const deadline = props.deadline.split(":");
-        const deadlineHours = parseInt(deadline[0]);
-        const deadlineMinutes = parseInt(deadline[1]);
-
-        console.log(deadlineHours, deadlineMinutes);
-        console.log(props.currentTime.split(":"));
-
-        //deadline + startTime - currentTime
-        const startTime = props.startTime.split(":");
-        const time = props.currentTime.split(":");
-        const currentHours = parseInt(time[0]);
-        const currentMinutes = parseInt(time[1]);
-
-        console.log("Current time: ", currentHours, currentMinutes);
-        console.log("Start time: ", startTime);
-        console.log("Deadline: ", deadline);
-        console.log("Remaining hours: ", deadlineHours + props.startTime.split(":")[0] - currentHours);
-        console.log("Remaining minutes: ", deadlineMinutes + parseInt(props.startTime.split(":")[1]) - currentMinutes);
-        const remainingHours = deadlineHours + parseInt(props.startTime.split(":")[0]) - currentHours;
-        const remainingMinutes = deadlineMinutes + parseInt(props.startTime.split(":")[1]) - currentMinutes;
-        const remainingTime = `${remainingHours}h:${remainingMinutes}min`;
-
-        return remainingTime;
-    }
     return (
         <div className={`relative flex flex-col px-5 py-2 md:px-10 md:py-3 h-fit bg-white rounded-xl gap-y-5 md:gap-y-10 hover:cursor-pointer`}
              style={{
@@ -103,7 +78,7 @@ export const Task = (props) => {
             <section className={`flex flex-col md:flex-row gap-1 md:gap-10 w-fit`}>
                 <p className={`text-sm`}>Started at <span
                     className={`font-bold text-md md:text-xl`}>{props.startTime}</span></p>
-                <p className={`text-sm md:text-md`}>Available time <span
+                <p className={`text-sm md:text-md`}>Deadline <span
                     className={`text-lg md:text-2xl`}>{props.deadline}</span></p>
             </section>
         </div>

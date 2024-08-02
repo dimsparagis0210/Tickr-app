@@ -51,7 +51,7 @@ export const CompletedList = (props) => {
                                     }}
                                     onRedo={() => {
                                         tasks[index].status = "todo";
-                                        props.onRedo(tasks[index], index);
+                                        props.onRedo(tasks[index]);
                                     }}
                                 />
                             ))}
