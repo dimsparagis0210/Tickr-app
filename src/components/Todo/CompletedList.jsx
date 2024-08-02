@@ -34,7 +34,7 @@ export const CompletedList = (props) => {
                                 No tasks yet
                             </p>
                             :
-                            Object.keys(tasks).map((index) => (
+                            Object.keys(tasks).map(( index) => (
                                 <Task
                                     priority={tasks[index].priority}
                                     key={index}
@@ -45,7 +45,9 @@ export const CompletedList = (props) => {
                                     startTime={tasks[index].startTime}
                                     currentTime={time}
                                     onDelete={() => {
-                                        props.onDelete(tasks[index], index);
+                                        console.log("Deleted");
+                                        console.log(tasks[index]);
+                                        props.onDelete(tasks[index]);
                                     }}
                                     onRedo={() => {
                                         tasks[index].status = "todo";

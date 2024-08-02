@@ -148,9 +148,11 @@ export const Todo = () => {
         });
     }
 
-    const deleteHandler = (task, index) => {
+    const deleteHandler = (task) => {
+        console.log("Task", task);
+        console.log("Id", task.key);
         setTasks((prevTasks) =>
-            prevTasks.filter((t, i) => i !== parseInt(index))
+            prevTasks.filter((t, i) => t.key !== task.key)
         );
         const updates = {};
         updates[`users/${context.id}/tasks/${task.key}`] = null;
