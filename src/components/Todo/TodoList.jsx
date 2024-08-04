@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {Task} from "./Task";
 
+//TodoList component: This component is responsible for rendering the list of tasks with status "todo"
 export const TodoList = (props) => {
     const localTime = new Date().toLocaleTimeString();
     const [time, setTime] = useState(localTime);

@@ -1,4 +1,18 @@
+import {useUserContext} from "../../store/user-context";
+import {useNavigate} from "react-router-dom";
+
+// Header component: Holds the header of the todo list
 export const Header = (props) => {
+    const context = useUserContext();
+    const navigate = useNavigate();
+
+    // Method to log out the user
+    const logOutHandler = () => {
+        localStorage.removeItem(context.email);
+        console.log("Logged out");
+        navigate("/log-in");
+    }
+
     return (
         <>
             <header className={`p-10 flex flex-col items-center`}>
@@ -11,7 +25,7 @@ export const Header = (props) => {
                                             px-4 py-3 md:px-5 md:py-4 
                                             top-5 left-5 md:top-10 md:left-10
                                   `}
-                    onClick={props.onLogOut}
+                    onClick={logOutHandler}
             >
                 Log Out
             </button>

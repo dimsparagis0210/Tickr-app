@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {Task} from "./Task";
 
+// CompletedList component: This component is responsible for rendering the list of tasks with the status "completed"
 export const CompletedList = (props) => {
     const localTime = new Date().toLocaleTimeString();
     const [time, setTime] = useState(localTime);

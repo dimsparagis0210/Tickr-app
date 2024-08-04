@@ -1,10 +1,10 @@
 import {colors, inputs} from "../../data/data";
 import {NewTaskInput} from "./NewTaskInput";
 import {useEffect, useState} from "react";
-import {push, ref, update} from "firebase/database";
-import {useFirebase} from "../../hooks/useFirebase";
 import {useUserContext} from "../../store/user-context";
 
+// NewTaskWindow component: Holds the logic of the new Task window, the state of the inputs,
+// and the methods to handle the inputs
 export const NewTaskWindow = (props) => {
     // States
     const [error, setError] = useState({

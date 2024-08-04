@@ -1,23 +1,18 @@
-import {UserContext, useUserContext} from "../../store/user-context";
-import {useEffect, useRef, useState} from "react";
-import {TodoList} from "./TodoList";
-import {CompletedList} from "./CompletedList";
-import {NewTaskInput} from "./NewTaskInput";
-import {colors, inputs} from "../../data/data";
-import {useNavigate} from "react-router-dom";
+import {useUserContext} from "../../store/user-context";
+import {useEffect, useState} from "react";
 import {useFirebase} from "../../hooks/useFirebase";
 import {push, ref, update} from "firebase/database";
 import {IsLoggedIn} from "../Auth/IsLoggedIn";
 import {Header} from "./Header";
 import {Background} from "./Background";
 import {NewTaskWindow} from "./NewTaskWindow";
+import {TaskList} from "./TaskList";
 
+// Todo component: Holds the main logic for the todo list, the state of the tasks, and the methods to handle the tasks
 export const Todo = () => {
     //States
     const [taskWindowOpen, setTaskWindowOpen] = useState(false);
-
     const [order, setOrder] = useState("date");
-    const navigate = useNavigate();
     const db = useFirebase();
     const context = useUserContext();
     const [input, setInput] = useState({
@@ -29,9 +24,9 @@ export const Todo = () => {
 
     //Getting user from local storage
     const user = JSON.parse(localStorage.getItem(context.email));
-    console.log("User", user);
-    let objectTasks = [];
 
+    // Getting tasks and setting them to the state
+    let objectTasks = [];
     if (user) {
         Object.keys(user.tasks).map((item) => {
             objectTasks.push(
@@ -48,9 +43,10 @@ export const Todo = () => {
             );
         });
     }
-    console.log("Tasks", objectTasks);
     const [tasks, setTasks] = useState(objectTasks);
 
+    // Effects
+    // Updating the user state when the tasks state changes
     useEffect(() => {
         const newUser = {
             ...user,
@@ -59,6 +55,8 @@ export const Todo = () => {
         localStorage.setItem(user?.email, JSON.stringify(newUser));
     }, [tasks])
 
+    // Methods
+    // Function to handle the completion of a task
     const completeHandler = (task, index) => {
         setTasks((prevTasks) =>
             prevTasks.map((t, i) => (t.key === task.key ? task : t))
@@ -71,6 +69,7 @@ export const Todo = () => {
         });
     }
 
+    // Function to handle the redo of a task
     const redoHandler = (task) => {
         setTasks((prevTasks) =>
             prevTasks.map((t, i) => (t.key === task.key ? task : t))
@@ -83,6 +82,7 @@ export const Todo = () => {
         });
     }
 
+    // Function to handle the deletion of a task
     const deleteHandler = (task) => {
         console.log("Task", task);
         console.log("Id", task.key);
@@ -97,12 +97,8 @@ export const Todo = () => {
         });
     }
 
-    const logOutHandler = () => {
-        localStorage.removeItem(context.email);
-        console.log("Logged out");
-        navigate("/log-in");
-    }
-
+    // Function to change the state of the order
+    // Triggers a re-render and a re-order of the tasks
     const orderTasks = () => {
         if (order === "date") {
             setOrder("priority");
@@ -111,6 +107,7 @@ export const Todo = () => {
         }
     }
 
+    // Function to save a task to the database
     const saveTask = (uid, task) => {
         return new Promise((resolve, reject) => {
             const newTaskKey = push(ref(db, `users/${uid}/tasks`)).key;
@@ -130,7 +127,7 @@ export const Todo = () => {
     return (
         <IsLoggedIn>
             <div className={`relative min-h-screen flex flex-col items-center justify-center`}>
-                <Header onLogOut={logOutHandler}/>
+                <Header/>
                 <Background/>
                 <NewTaskWindow
                     taskWindowOpen={taskWindowOpen}
@@ -181,57 +178,17 @@ export const Todo = () => {
                         });
                     }}
                 />
-                <div className={`relative flex flex-col items-center rounded-xl shadow-2xl`}
-                     style={{
-                         background: "rgba(0, 0, 0, 0.1)",
-                         backdropFilter: `blur(10px)`,
-                     }}
-                >
-                    <button className={`bg-gradient-to-r from-red-50 to-zinc-100 h-fit 
-                                        rounded-xl shadow-xl absolute right-10 top-5
-                                        hover:from-red-100 hover:to-zinc-200 hover:shadow-2xl
-                                        px-4 py-3 md:px-5 md:py-4 
-                                        `}
-                            onClick={() => {
-                                setTaskWindowOpen(true)
-                            }}
-                    >
-                        Create
-                    </button>
-                    <button className={`bg-gradient-to-r from-red-50 to-zinc-100 h-fit 
-                                        rounded-xl shadow-xl absolute left-10 top-5
-                                        hover:from-red-100 hover:to-zinc-200 hover:shadow-2xl
-                                        px-4 py-3 md:px-5 md:py-4 
-                                        `}
-                            onClick={() => {
-                                orderTasks()
-                            }}
-                    >
-                        Order by {order}
-                    </button>
-                    <main
-                        className={`flex flex-col items-center w-[30rem] h-[30rem] md:w-[50rem] md:h-[40rem] overflow-scroll`}>
-
-                        <h1 className={`text-2xl md:text-4xl text-gray-700 font-bold mb-4 p-10`}>Your Tasks</h1>
-                        <div className={`flex`}>
-                            <section className={`flex flex-col gap-y-10`}>
-                                <TodoList
-                                    order={order}
-                                    array={tasks}
-                                    onComplete={(task, index) => completeHandler(task, index)}
-                                    onDelete={(task, index) => deleteHandler(task, index)}
-                                />
-                            </section>
-                            <section className={`flex flex-col gap-y-10 overflow-y-auto`}>
-                                <CompletedList
-                                    array={tasks}
-                                    onDelete={(task, index) => deleteHandler(task, index)}
-                                    onRedo={(task, index) => redoHandler(task, index)}
-                                />
-                            </section>
-                        </div>
-                    </main>
-                </div>
+                <TaskList
+                    onToggleNewTaskWindow={() => {
+                        setTaskWindowOpen(true)
+                    }}
+                    onOrderTasks={orderTasks}
+                    order={order}
+                    tasks={tasks}
+                    onComplete={(task, index) => completeHandler(task, index)}
+                    onDelete={(task, index) => deleteHandler(task, index)}
+                    onRedo={(task, index) => redoHandler(task, index)}
+                />
             </div>
         </IsLoggedIn>
     );

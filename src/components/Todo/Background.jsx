@@ -1,3 +1,4 @@
+// Background component: Holds the background elements of the todo list
 export const Background = () => {
     return (
         <>

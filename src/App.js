@@ -5,10 +5,10 @@ import {Home} from "./components/Home";
 import {UserContext} from "./store/user-context";
 import {useState} from "react";
 import {Todo} from "./components/Todo/Todo";
-import {initializeApp} from "firebase/app";
 
-
+// Main component: Holds the main logic for the app, the state of the user, and the routes
 function App() {
+    // Routes
     let routes = useRoutes([
         {
             path: `/`,
@@ -28,6 +28,7 @@ function App() {
         }
     ]);
 
+    // Value for the context provider
     const [user, setUser] = useState({
         name: "",
         email: "",
