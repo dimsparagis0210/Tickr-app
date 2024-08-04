@@ -18,6 +18,7 @@ Tickr is a web-based productivity tool designed to help you organize and priorit
 ## For Developers
 If you want to run the project in a development environment, those are some simple steps you have to follow:
 1) Clone the app in a Code Editor/IDE using this link: https://github.com/dimsparagis0210/Tickr-app.git
-2) Open the terminal and run `npm start`
-3) Open your browser and go to the localhost [http://localhost:3000](http://localhost:3000)
+2) Open the terminal and run `npm install`
+3) Run `npm start`
+4) Open your browser and go to the localhost [http://localhost:3000](http://localhost:3000)
 
