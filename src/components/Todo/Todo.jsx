@@ -13,6 +13,7 @@ export const Todo = () => {
     //States
     const [taskWindowOpen, setTaskWindowOpen] = useState(false);
     const [selectedRadio, setSelectedRadio] = useState(null);
+    const [order, setOrder] = useState("date");
     const navigate = useNavigate();
     const [radio, setRadio] = useState({
         high: false,
@@ -229,6 +230,14 @@ export const Todo = () => {
         navigate("/log-in");
     }
 
+    const orderTasks = () => {
+        if (order === "date") {
+            setOrder("priority");
+        } else {
+            setOrder("date");
+        }
+    }
+
     return (
         <IsLoggedIn>
             <div className={`relative min-h-screen flex flex-col items-center justify-center`}>
@@ -346,12 +355,25 @@ export const Todo = () => {
                     >
                         Create
                     </button>
-                    <main className={`flex flex-col items-center w-[30rem] h-[30rem] md:w-[50rem] md:h-[40rem] overflow-scroll`}>
+                    <button className={`bg-gradient-to-r from-red-50 to-zinc-100 h-fit 
+                                        rounded-xl shadow-xl absolute left-10 top-5
+                                        hover:from-red-100 hover:to-zinc-200 hover:shadow-2xl
+                                        px-4 py-3 md:px-5 md:py-4 
+                                        `}
+                            onClick={() => {
+                                orderTasks()
+                            }}
+                    >
+                        Order by {order}
+                    </button>
+                    <main
+                        className={`flex flex-col items-center w-[30rem] h-[30rem] md:w-[50rem] md:h-[40rem] overflow-scroll`}>
 
                         <h1 className={`text-2xl md:text-4xl text-gray-700 font-bold mb-4 p-10`}>Your Tasks</h1>
                         <div className={`flex`}>
                             <section className={`flex flex-col gap-y-10`}>
                                 <TodoList
+                                    order={order}
                                     array={tasks}
                                     onComplete={(task, index) => completeHandler(task, index)}
                                     onDelete={(task, index) => deleteHandler(task, index)}

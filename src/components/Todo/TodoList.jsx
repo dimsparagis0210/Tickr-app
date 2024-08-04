@@ -9,19 +9,34 @@ export const TodoList = (props) => {
 
     useEffect(() => {
         const filteredTasks = props.array.filter((task) => task.status === "todo");
-        // Sort tasks by the time they were added (Descending order)
-        filteredTasks.sort((a, b) => {
-            const [hoursA, minutesA] = a.startTime.split(':').map(Number);
-            const [hoursB, minutesB] = b.startTime.split(':').map(Number);
+        console.log(props.order);
+        // If order = date, then change the sort in a priority based order
+        if (props.order === 'date') {
+            const priorityMap = {
+                "rgba(238, 42, 42, 0.8)": 2,
+                "rgba(255, 196, 58, 0.8)": 1,
+                "rgba(173, 255, 122, 0.8)": 0,
+            };
 
-            const totalMinutesA = hoursA * 60 + minutesA;
-            const totalMinutesB = hoursB * 60 + minutesB;
+            filteredTasks.sort((a, b) => {
+                return priorityMap[b.priority] - priorityMap[a.priority];
+            });
+            console.log("Filtered Tasks", filteredTasks);
+            setTasks(filteredTasks);
+        } else {
+            // Sort tasks by the time they were added (Descending order)
+            filteredTasks.sort((a, b) => {
+                const [hoursA, minutesA] = a.startTime.split(':').map(Number);
+                const [hoursB, minutesB] = b.startTime.split(':').map(Number);
 
-            return totalMinutesB - totalMinutesA;
-        });
-        console.log(filteredTasks);
+                const totalMinutesA = hoursA * 60 + minutesA;
+                const totalMinutesB = hoursB * 60 + minutesB;
+
+                return totalMinutesB - totalMinutesA;
+            });
+        }
         setTasks(filteredTasks);
-    }, [props.array]);
+    }, [props.array, props.order]);
 
     useEffect(() => {
         const interval = setInterval(() => {
