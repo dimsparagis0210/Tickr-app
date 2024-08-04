@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {Task} from "./Task";
 
+//TodoList component: This component is responsible for rendering the list of tasks with status "todo"
 export const TodoList = (props) => {
     const localTime = new Date().toLocaleTimeString();
     const [time, setTime] = useState(localTime);
@@ -9,8 +10,34 @@ export const TodoList = (props) => {
 
     useEffect(() => {
         const filteredTasks = props.array.filter((task) => task.status === "todo");
+        console.log(props.order);
+        // If order = date, then change the sort in a priority based order
+        if (props.order === 'date') {
+            const priorityMap = {
+                "rgba(238, 42, 42, 0.8)": 2,
+                "rgba(255, 196, 58, 0.8)": 1,
+                "rgba(173, 255, 122, 0.8)": 0,
+            };
+
+            filteredTasks.sort((a, b) => {
+                return priorityMap[b.priority] - priorityMap[a.priority];
+            });
+            console.log("Filtered Tasks", filteredTasks);
+            setTasks(filteredTasks);
+        } else {
+            // Sort tasks by the time they were added (Descending order)
+            filteredTasks.sort((a, b) => {
+                const [hoursA, minutesA] = a.startTime.split(':').map(Number);
+                const [hoursB, minutesB] = b.startTime.split(':').map(Number);
+
+                const totalMinutesA = hoursA * 60 + minutesA;
+                const totalMinutesB = hoursB * 60 + minutesB;
+
+                return totalMinutesB - totalMinutesA;
+            });
+        }
         setTasks(filteredTasks);
-    }, [props.array]);
+    }, [props.array, props.order]);
 
     useEffect(() => {
         const interval = setInterval(() => {

@@ -1,6 +1,7 @@
 import {initializeApp} from "firebase/app";
 import {getDatabase} from "firebase/database";
 
+// useFirebase hook: Returns the firebase database
 export const useFirebase = () => {
     const firebaseConfig = {
         databaseURL: "https://to-do-cosmos-default-rtdb.europe-west1.firebasedatabase.app/",

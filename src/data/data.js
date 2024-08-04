@@ -1,3 +1,5 @@
+// Data for the app and dummy data for testing
+
 export const colors = {
     high: "rgba(238, 42, 42, 0.8)",
     medium: "rgba(255, 196, 58, 0.8)",

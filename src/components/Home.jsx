@@ -1,5 +1,6 @@
 import {Link} from "react-router-dom";
 
+// Home component: This component is responsible for rendering the home page
 export const Home = () => {
     return(
         <div className={`min-h-screen relative w-full flex justify-center items-center flex-col gap-y-10 
