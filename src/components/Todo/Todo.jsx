@@ -73,6 +73,12 @@ export const Todo = () => {
         localStorage.setItem(user?.email, JSON.stringify(newUser));
     }, [tasks])
 
+    const setTime = () => {
+        const now = new Date();
+        const minutes = String(now.getMinutes()).padStart(2, '0'); // Pad with leading zero if needed
+        const formattedTime = `${now.getHours()}:${minutes}`;
+        return formattedTime;
+    }
     //Function for the task submission
     const submitTask = () => {
         let areAllValid = 1;
@@ -84,7 +90,8 @@ export const Todo = () => {
             deadline: input.deadline,
             priority: input.priority,
             status: "todo",
-            startTime: `${new Date().getHours()}:${new Date().getMinutes()}`,
+            date: `${new Date()}`,
+            startTime: setTime(),
         }
         Object.keys(input).map((item) => {
             if (input[item] === "" && item !== "description") {

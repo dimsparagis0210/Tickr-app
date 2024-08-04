@@ -9,6 +9,17 @@ export const TodoList = (props) => {
 
     useEffect(() => {
         const filteredTasks = props.array.filter((task) => task.status === "todo");
+        // Sort tasks by the time they were added (Descending order)
+        filteredTasks.sort((a, b) => {
+            const [hoursA, minutesA] = a.startTime.split(':').map(Number);
+            const [hoursB, minutesB] = b.startTime.split(':').map(Number);
+
+            const totalMinutesA = hoursA * 60 + minutesA;
+            const totalMinutesB = hoursB * 60 + minutesB;
+
+            return totalMinutesB - totalMinutesA;
+        });
+        console.log(filteredTasks);
         setTasks(filteredTasks);
     }, [props.array]);
 
