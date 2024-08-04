@@ -6,8 +6,9 @@ export const TaskList = (props) => {
     return (
         <div className={`relative flex flex-col items-center rounded-xl shadow-2xl`}
              style={{
-                 background: "rgba(0, 0, 0, 0.1)",
-                 backdropFilter: `blur(10px)`,
+                 backdropFilter: 'blur(10px)',
+                 WebkitBackdropFilter: 'blur(10px)',
+                 background: 'rgba(0, 0, 0, 0.1)'
              }}
         >
             <button className={`bg-gradient-to-r from-red-50 to-zinc-100 h-fit 
