@@ -55,6 +55,10 @@ export const SignUp = () => {
                     this.error = 1;
                     console.log("Password is empty");
                     return 0;
+                } else if (this.value.length < 5) {
+                    this.error = 1;
+                    console.log("Password is too short");
+                    return 0;
                 } else {
                     this.error = 0;
                     return 1;
@@ -68,11 +72,18 @@ export const SignUp = () => {
         confirmPassword: {
             value: "",
             error: 0,
-            validate: function () {
+            validate: function (password) {
                 if (this.value === "") {
                     this.error = 1;
                     console.log("Confirm password is empty");
                     return 0;
+                } else if(this.value !== password) {
+                    console.log("Password", password);
+                    console.log("Confirm Password", this.value);
+                    this.error = 1;
+                    console.log("Passwords do not match");
+                    return 0;
+
                 } else {
                     this.error = 0;
                     return 1;
@@ -85,7 +96,7 @@ export const SignUp = () => {
     });
 
     const [submitted, setSubmitted] = useState(0);
-
+    const [passwordType, setPasswordType] = useState("password");
     const navigate = useNavigate();
 
     // Handle form submission
@@ -96,7 +107,12 @@ export const SignUp = () => {
 
         // Check if all fields are valid
         Object.keys(user).map((item) => {
-            const valid = user[item].validate();
+            let valid;
+            if (item === "confirmPassword") {
+                valid = user[item].validate(user.password.value);
+            } else {
+                valid = user[item].validate();
+            }
             if (!valid) {
                 setUser((prevState) => ({
                     ...prevState,
@@ -172,23 +188,16 @@ export const SignUp = () => {
         let found;
         return get(ref(db, `users/`)).then((snapshot) => {
             if (snapshot.exists()) {
-                console.log("Snapshot", snapshot.val());
                 const data = snapshot.val();
                 found = false;
-                data.map((user) => {
-                    console.log(user);
-                    console.log(user.email);
-                    console.log(email);
-                    console.log(user.email === email);
-                    if (user.email === email) {
+                Object.entries(data).map((key) => {
+                    if (key[1].email === email) {
                         found = true;
                     }
-                })
-                console.log(snapshot.val());
+                });
             } else {
                 console.log("No data available");
             }
-            console.log("Found", found);
             return found;
         }).catch((error) => {
             console.error(error);
@@ -212,9 +221,9 @@ export const SignUp = () => {
     return (
         <div className={`relative min-h-screen flex items-center justify-center overflow-hidden`}>
             <div
-                className={`absolute w-[20rem] lg:w-[30rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1]`}></div>
+                className={`absolute w-[15rem] md:w-[20rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1]`}></div>
             <div
-                className={`absolute w-[10rem] lg:w-[20rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1] bottom-[17rem] lg:bottom-[10rem]`}></div>
+                className={`absolute w-[10rem] md:w-[15rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1] mt-[17rem] mt:bottom-[10rem]`}></div>
 
             <section
                 style={{
@@ -222,25 +231,48 @@ export const SignUp = () => {
                     WebkitBackdropFilter: 'blur(10px)',
                     background: 'rgba(0, 0, 0, 0.1)'
                 }}
-                className={`w-[30rem] lg:w-[40rem] h-fit flex flex-col justify-center items-center gap-y-10 
+                className={`w-[22rem] md:w-[40rem] h-fit flex flex-col justify-center items-center gap-y-10 
                      rounded-xl shadow-2xl p-10`}
             >
                 <header className={`flex flex-col items-center`}>
-                    <h1 className={`text-5xl font-bold`}>Sign Up</h1>
-                    <h2 className={`text-xl text-gray-400`}>Register your account</h2>
+                    <h1 className={`text-3xl md:text-5xl font-bold`}>Sign Up</h1>
+                    <h2 className={`text-md md:text-xl text-gray-400`}>Register your account</h2>
                 </header>
                 <main>
                     <div className={`flex flex-col gap-4`}>
                         {
                             Object.keys(user).map((item, index) => {
-                                return (
-                                    <Input key={index} onChange={({name, value}) => handleChange({name, value})}
-                                           type={user[item].type}
-                                           label={user[item].label} error={user[item].error}
-                                           placeholder={item.placeholder}/>
-                                )
+                                if (user[item].type === "password" || user[item].type === "confirmPassword") {
+                                    return (
+                                        <Input key={index} onChange={({name, value}) => handleChange({name, value})}
+                                               type={passwordType}
+                                               label={user[item].label} error={user[item].error}
+                                               placeholder={item.placeholder}/>
+                                    )
+                                } else {
+                                    return (
+                                        <Input key={index} onChange={({name, value}) => handleChange({name, value})}
+                                               type={user[item].type}
+                                               label={user[item].label} error={user[item].error}
+                                               placeholder={item.placeholder}/>
+                                    )
+                                }
                             })
                         }
+                        <button
+                            onClick={() => {
+                                if (passwordType === "password") {
+                                    setPasswordType("text");
+                                } else {
+                                    setPasswordType("password");
+                                }
+                            }}
+                            className={`bg-gradient-to-r from-purple-50 to-fuchsia-200 p-2 rounded-md text-gray-400 shadow-2xl`}
+                        >
+                            {
+                                passwordType === "password" ? "Show" : "Hide"
+                            } Password
+                        </button>
                         <button style={{
                             backdropFilter: 'blur(10px)',
                             background: 'rgba(0, 0, 0, 0.1)'
@@ -250,7 +282,8 @@ export const SignUp = () => {
                         >
                             Sign Up
                         </button>
-                        <p>Already have an account? <Link to="/log-in" className={`bg-white px-5 py-2 rounded-lg`}>Log
+                        <p className={`flex flex-col items-center sm:gap-0 sm:flex-row`}>Already have an account? <Link
+                            to="/log-in" className={`bg-white px-5 py-2 rounded-lg`}>Log
                             in</Link></p>
                     </div>
                 </main>

@@ -22,7 +22,7 @@ export const CompletedList = (props) => {
 
     return (
         <div className={`h-full`}>
-            <h1 className={`text-lg md:text-2xl text-gray-500 self-start px-5`}>Completed</h1>
+            <h1 className={`text-lg lg:text-2xl text-gray-500 self-start px-5`}>Completed</h1>
             <div
                 className={`relative rounded-xl overflow-hidden`}
             >
@@ -30,7 +30,7 @@ export const CompletedList = (props) => {
                     {
                         tasks === undefined || tasks.length === 0
                             ?
-                            <p className={`text-center text-lg md:text-2xl text-gray-400 mt-5 px-10`}>
+                            <p className={`text-center text-lg lg:text-2xl text-gray-400 mt-5 px-10`}>
                                 No tasks yet
                             </p>
                             :
