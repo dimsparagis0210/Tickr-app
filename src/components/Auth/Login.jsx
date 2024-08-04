@@ -7,6 +7,7 @@ import {get, ref} from "firebase/database";
 
 export const Login = () => {
     const context = useUserContext();
+    const [passwordType, setPasswordType] = useState("password");
     // User input state
     const [user, setUser] = useState({
         email: {
@@ -108,10 +109,11 @@ export const Login = () => {
                         console.log("Found user");
                         found = true;
                         context.id = user;
-                        context.name = data[user].name;
+                        context.name = data[user].username;
                         context.email =  data[user].email;
                         context.password =  data[user].password;
                         context.tasks =  data[user].tasks || [];
+                        console.log(context);
                     }
                 })
             } else {
@@ -153,9 +155,9 @@ export const Login = () => {
     return (
         <div className={`relative min-h-screen flex items-center justify-center overflow-hidden`}>
             <div
-                className={`absolute w-[20rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1]`}></div>
+                className={`absolute w-[15rem] md:w-[20rem] aspect-square rounded-full bg-purple-400 opacity-10 z-[-1]`}></div>
             <div
-                className={`absolute w-[15rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1] mt-[10rem]`}></div>
+                className={`absolute w-[10rem] md:w-[15rem] aspect-square rounded-full bg-pink-400 opacity-10 z-[-1] mt-[10rem]`}></div>
 
             <section
                 style={{
@@ -163,22 +165,48 @@ export const Login = () => {
                     WebkitBackdropFilter: 'blur(10px)',
                     background: 'rgba(0, 0, 0, 0.1)'
                 }}
-                className={`w-[30rem] lg:w-[40rem] h-fit flex flex-col justify-center items-center gap-y-10 
+                className={`w-[25rem] md:w-[40rem] h-fit flex flex-col justify-center items-center gap-y-10 
                      rounded-xl shadow-2xl p-10`}
             >
                 <header className={`flex flex-col items-center`}>
-                    <h1 className={`text-5xl font-bold`}>Log in</h1>
-                    <h2 className={`text-xl text-gray-400`}>Enter your credentials</h2>
+                    <h1 className={`text-3xl md:text-5xl font-bold`}>Log in</h1>
+                    <h2 className={`text-md md:text-xl text-gray-400`}>Enter your credentials</h2>
                 </header>
                 <main>
                     <div className={`flex flex-col gap-4`}>
                         {
                             Object.keys(user).map((item, index) => {
-                                return (
-                                    <Input key={index} onChange={({name, value}) => handleChange({name, value})}
-                                           type={user[item].type}
-                                           label={user[item].label} error={user[item].error} placeholder={item.placeholder}/>
-                                )
+                                if (user[item].type === "password") {
+                                    return (
+                                        <>
+                                            <Input key={index} onChange={({name, value}) => handleChange({name, value})}
+                                                   type={passwordType}
+                                                   label={user[item].label} error={user[item].error} placeholder={user[item].placeholder}
+                                            />
+                                            <button
+                                                onClick={() => {
+                                                    if (passwordType === "password") {
+                                                        setPasswordType("text");
+                                                    } else {
+                                                        setPasswordType("password");
+                                                    }
+                                                }}
+                                                className={`bg-gradient-to-r from-purple-50 to-fuchsia-200 p-2 rounded-md text-gray-400 shadow-2xl`}
+                                            >
+                                                {
+                                                    passwordType === "password" ? "Show" : "Hide"
+                                                } Password
+                                            </button>
+                                        </>
+                                    )
+                                } else {
+                                    return (
+                                        <Input key={index} onChange={({name, value}) => handleChange({name, value})}
+                                               type={user[item].type}
+                                               label={user[item].label} error={user[item].error} placeholder={user[item].placeholder}
+                                        />
+                                    )
+                                }
                             })
                         }
                         <button style={{
