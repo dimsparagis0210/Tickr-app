@@ -12,7 +12,7 @@ export const Home = () => {
                 }}
             >
                 <div className={`object-cover`}>
-                    <img src="./Tickr.png" alt="Tickr" className={`p-1 ob`}/>
+                    <img src="./Tickr.png" alt="Tickr" className={`p-1`}/>
                 </div>
                 <header className={`flex flex-col items-center`}>
                     <h1 className={`text-2xl md:text-5xl font-bold`}>Productivity at its peak</h1>
