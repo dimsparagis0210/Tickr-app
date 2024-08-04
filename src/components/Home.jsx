@@ -5,7 +5,7 @@ export const Home = () => {
     return(
         <div className={`min-h-screen relative w-full flex justify-center items-center flex-col gap-y-10 
         bg-white`}>
-            <div className={`w-[40rem] h-[30rem] flex justify-center items-center flex-col gap-y-10 
+            <div className={`w-[20rem] h-[20rem] md:w-[40rem] md:h-[30rem] flex justify-center items-center flex-col gap-y-10 
             text-gray-800 rounded-xl shadow-2xl`}
                  style={{
                      backdropFilter:'blur(10px)',
@@ -13,8 +13,8 @@ export const Home = () => {
                 }}
             >
                 <header className={`flex flex-col items-center`}>
-                    <h1 className={`text-5xl font-bold`}>Productivity at its peak</h1>
-                    <h2 className={`text-2xl`}>Start tracking your tasks</h2>
+                    <h1 className={`text-2xl md:text-5xl font-bold`}>Productivity at its peak</h1>
+                    <h2 className={`text-lg md:text-2xl`}>Start tracking your tasks</h2>
                 </header>
                 <main className={`flex gap-4`}>
                     <Link to={`/log-in`} className={`bg-blue-300 p-5 rounded-xl`} style={{
