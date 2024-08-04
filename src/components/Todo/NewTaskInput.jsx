@@ -1,5 +1,6 @@
-import {useEffect, useRef} from "react";
+import {useRef} from "react";
 
+// NewTaskInput component: Holds the input fields for the new task
 export const NewTaskInput = (props) => {
     const inputRef = useRef();
     const changeHandler = (event) => {

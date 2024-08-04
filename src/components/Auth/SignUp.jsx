@@ -7,6 +7,7 @@ import {useFirebase} from "../../hooks/useFirebase";
 
 
 export const SignUp = () => {
+    // User input state
     const [user, setUser] = useState({
         name: {
             value: "",
@@ -87,10 +88,13 @@ export const SignUp = () => {
 
     const navigate = useNavigate();
 
+    // Handle form submission
     const handleSubmit = () => {
         console.log(user);
         setSubmitted(1);
         let allValid = 1;
+
+        // Check if all fields are valid
         Object.keys(user).map((item) => {
             const valid = user[item].validate();
             if (!valid) {
@@ -104,6 +108,8 @@ export const SignUp = () => {
                 allValid = 0;
             }
         });
+
+        // If all fields are valid, create user object, save to database and local storage and navigate to todo page
         if (allValid) {
             console.log("All valid");
             const finalUser = {
@@ -127,8 +133,11 @@ export const SignUp = () => {
         }
     }
 
+    // Handle input change
     const handleChange = ({name, value}) => {
 
+        // If the form has been submitted, validate the input fields
+        // Else just update the value
         if (submitted) {
             console.log("submitted");
             console.log(user[name].validate(value));
@@ -210,6 +219,7 @@ export const SignUp = () => {
             <section
                 style={{
                     backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
                     background: 'rgba(0, 0, 0, 0.1)'
                 }}
                 className={`w-[30rem] lg:w-[40rem] h-fit flex flex-col justify-center items-center gap-y-10 

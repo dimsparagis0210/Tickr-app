@@ -1,15 +1,10 @@
-import {useState} from "react";
-
+// Task component: Holds the logic for every task in the tasks list
 export const Task = (props) => {
-    const [hover, setHover] = useState(false);
-
     return (
         <div className={`relative flex flex-col px-5 py-2 md:px-10 md:py-3 h-fit bg-white rounded-xl gap-y-5 md:gap-y-10 hover:cursor-pointer`}
              style={{
                  boxShadow: `15px 0px 0px -5px ${props.priority} inset`
              }}
-             onMouseEnter={() => setHover(true)}
-             onMouseLeave={() => setHover(false)}
         >
 
             <header className={`flex gap-x-5 justify-between`}>

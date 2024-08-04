@@ -1,5 +1,3 @@
-import {useEffect, useRef} from "react";
-
 export const Input = (props) => {
     let id;
 
@@ -8,6 +6,7 @@ export const Input = (props) => {
     } else {
         id = props.type;
     }
+
     const handleChange = (e) => {
         if (props.label === 'Confirm Password') {
             props.onChange({name: 'confirmPassword', value: e.target.value});

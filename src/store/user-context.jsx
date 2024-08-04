@@ -1,5 +1,6 @@
 import {createContext, useContext, useState} from "react";
 
+// UserContext: Context to hold the user data
 export const UserContext = createContext({
     id: "",
     name: "",
@@ -8,6 +9,7 @@ export const UserContext = createContext({
     tasks: [],
 });
 
+// useUserContext hook: Hook to use the UserContext with error handling
 export const useUserContext = () => {
     const context = useContext(UserContext);
     if (context === undefined) {
