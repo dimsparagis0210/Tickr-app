@@ -52,7 +52,7 @@ export const Login = () => {
             },
             type: "password",
             label: "Password",
-            placeholder: "5+ characters",
+            placeholder: "8+ characters",
         },
     });
 
