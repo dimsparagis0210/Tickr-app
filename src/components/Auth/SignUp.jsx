@@ -141,7 +141,7 @@ export const SignUp = () => {
                 } else {
                     localStorage.setItem(finalUser.email, JSON.stringify(finalUser));
                     saveUser(finalUser).then(() => {
-                        navigate("/");
+                        navigate("/log-in");
                     });
                 }
             });
