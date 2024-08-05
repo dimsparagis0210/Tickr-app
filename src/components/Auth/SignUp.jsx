@@ -1,8 +1,7 @@
-import {Link, Navigate, useNavigate} from "react-router-dom";
-import {useEffect, useRef, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import { useState} from "react";
 import {Input} from "./Input";
-import {initializeApp} from "firebase/app";
-import { getDatabase, ref, set, get, child, push, update } from "firebase/database";
+import { ref, get, child, push, update } from "firebase/database";
 import {useFirebase} from "../../hooks/useFirebase";
 
 
@@ -247,14 +246,14 @@ export const SignUp = () => {
                                         <Input key={index} onChange={({name, value}) => handleChange({name, value})}
                                                type={passwordType}
                                                label={user[item].label} error={user[item].error}
-                                               placeholder={item.placeholder}/>
+                                               placeholder={user[item].placeholder}/>
                                     )
                                 } else {
                                     return (
                                         <Input key={index} onChange={({name, value}) => handleChange({name, value})}
                                                type={user[item].type}
                                                label={user[item].label} error={user[item].error}
-                                               placeholder={item.placeholder}/>
+                                               placeholder={user[item].placeholder}/>
                                     )
                                 }
                             })
