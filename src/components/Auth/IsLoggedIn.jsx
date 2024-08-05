@@ -19,7 +19,7 @@ export const IsLoggedIn = ({children}) => {
                 children
             :
                 <div className={`flex flex-col gap-y-10 justify-center items-center h-screen bg-gradient-to-r from-slate-50 to-zinc-300`}>
-                    <h1 className={`text-black text-5xl font-bold`}>You need to be logged in to view this page</h1>
+                    <h1 className={`text-black text-xl sm:text-2xl lg:text-5xl font-bold`}>You need to be logged in to view this page</h1>
                     <button
                         onClick={() => navigate('/log-in')}
                         className={`text-2xl bg-blue-500 text-white px-7 py-6 rounded-xl hover:text-black shadow-2xl`}
