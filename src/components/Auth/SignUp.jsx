@@ -33,7 +33,7 @@ export const SignUp = () => {
                     this.error = 1;
                     console.log("Email is empty");
                     return 0;
-                } else if (!this.value.includes("@")) {
+                } else if (!isEmail(this.value)) {
                     this.error = 1;
                     console.log("Email is invalid");
                     return 0;
@@ -100,6 +100,11 @@ export const SignUp = () => {
     const hasLetterAndNumber = (password) => {
         const regex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
         return regex.test(password);
+    }
+
+    const isEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     }
 
     const [submitted, setSubmitted] = useState(0);
@@ -190,6 +195,7 @@ export const SignUp = () => {
                 [name]: {
                     ...prevState[name],
                     value: value,
+                    error:0,
                 }
             }));
         }

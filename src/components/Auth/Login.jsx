@@ -18,7 +18,7 @@ export const Login = () => {
                     this.error = 1;
                     console.log("Email is empty");
                     return 0;
-                } else if (!this.value.includes("@")) {
+                } else if (!isEmail(this.value)) {
                     this.error = 1;
                     console.log("Email is invalid");
                     return 0;
@@ -39,10 +39,16 @@ export const Login = () => {
                     this.error = 1;
                     console.log("Password is empty");
                     return 0;
-                } else {
-                    this.error = 0;
-                    return 1;
+                } else if (!hasLetterAndNumber(this.value)) {
+                    this.error = 1;
+                    return 0;
+                } else if (this.value.length < 8) {
+                    this.error = 1;
+                    console.log("Password is too short");
+                    return 0;
                 }
+                this.error = 0;
+                return 1;
             },
             type: "password",
             label: "Password",
@@ -53,6 +59,16 @@ export const Login = () => {
     const [submitted, setSubmitted] = useState(0);
 
     const navigate = useNavigate();
+
+    const hasLetterAndNumber = (password) => {
+        const regex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+        return regex.test(password);
+    }
+
+    const isEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
 
     const handleSubmit = () => {
         setSubmitted(1);
