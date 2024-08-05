@@ -6,7 +6,6 @@ export const TodoList = (props) => {
     const localTime = new Date().toLocaleTimeString();
     const [time, setTime] = useState(localTime);
     const [tasks, setTasks] = useState(props.array);
-    const [hover, setHover] = useState(false);
 
     useEffect(() => {
         const filteredTasks = props.array.filter((task) => task.status === "todo");

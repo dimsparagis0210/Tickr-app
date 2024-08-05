@@ -96,7 +96,12 @@ export const NewTaskWindow = (props) => {
             props.taskWindowOpen &&
                 <>
                     <div
-                        className={`z-10 self-end absolute rounded-xl shadow-2xl right-10 bg-gradient-to-tl from-violet-600 to-yellow-300 flex flex-col p-5`}
+                        className={`z-10 self-end absolute rounded-t-xl
+                                    shadow-2xl bg-gradient-to-tl from-violet-600 to-yellow-300 flex flex-col p-5
+                                    bottom-0 h-1/2 overflow-scroll w-full                                                                
+                                    lg:right-10 lg:w-auto lg:overflow-auto lg:h-fit md:rounded-xl lg:bottom-auto
+                         
+                         `}
                         style={{
                             boxShadow: 'inset 0px 0px 0px 6px rgba(255,255,255,0.6)',
                         }}

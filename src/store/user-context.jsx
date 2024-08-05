@@ -1,4 +1,4 @@
-import {createContext, useContext, useState} from "react";
+import {createContext, useContext} from "react";
 
 // UserContext: Context to hold the user data
 export const UserContext = createContext({
