@@ -1,7 +1,7 @@
-import {colors, inputs} from "../../data/data";
+import {colors, inputs} from "../../../data/data";
 import {NewTaskInput} from "./NewTaskInput";
 import {useEffect, useState} from "react";
-import {useUserContext} from "../../store/user-context";
+import {useUserContext} from "../../../store/user-context";
 
 // NewTaskWindow component: Holds the logic of the new Task window, the state of the inputs,
 // and the methods to handle the inputs

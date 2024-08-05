@@ -3,9 +3,9 @@ import {useEffect, useState} from "react";
 import {useFirebase} from "../../hooks/useFirebase";
 import {push, ref, update} from "firebase/database";
 import {IsLoggedIn} from "../Auth/IsLoggedIn";
-import {Header} from "./Header";
-import {Background} from "./Background";
-import {NewTaskWindow} from "./NewTaskWindow";
+import {Header} from "./UI/Header";
+import {Background} from "./UI/Background";
+import {NewTaskWindow} from "./NewTask/NewTaskWindow";
 import {TaskList} from "./TaskList";
 
 // Todo component: Holds the main logic for the todo list, the state of the tasks, and the methods to handle the tasks
