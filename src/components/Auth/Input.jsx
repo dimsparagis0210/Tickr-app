@@ -10,6 +10,8 @@ export const Input = (props) => {
     const handleChange = (e) => {
         if (props.label === 'Confirm Password') {
             props.onChange({name: 'confirmPassword', value: e.target.value});
+        } else if (props.label === 'Password') {
+            props.onChange({name: 'password', value: e.target.value});
         } else {
             props.onChange({name: e.target.name, value: e.target.value});
         }

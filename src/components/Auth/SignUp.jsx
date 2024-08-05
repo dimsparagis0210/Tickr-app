@@ -54,18 +54,21 @@ export const SignUp = () => {
                     this.error = 1;
                     console.log("Password is empty");
                     return 0;
-                } else if (this.value.length < 5) {
+                } else if (this.value.length < 8) {
                     this.error = 1;
                     console.log("Password is too short");
                     return 0;
-                } else {
-                    this.error = 0;
-                    return 1;
+                } else if (!hasLetterAndNumber(this.value)) {
+                    this.error = 1;
+                    console.log("Password does not contain a letter and a number");
+                    return 0;
                 }
+                this.error = 0;
+                return 1;
             },
             type: "password",
             label: "Password",
-            placeholder: "5+ characters",
+            placeholder: "8+ characters",
         },
 
         confirmPassword: {
@@ -94,6 +97,11 @@ export const SignUp = () => {
         },
     });
 
+    const hasLetterAndNumber = (password) => {
+        const regex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+        return regex.test(password);
+    }
+
     const [submitted, setSubmitted] = useState(0);
     const [passwordType, setPasswordType] = useState("password");
     const navigate = useNavigate();
@@ -112,6 +120,7 @@ export const SignUp = () => {
             } else {
                 valid = user[item].validate();
             }
+            console.log("Item valid", item, valid);
             if (!valid) {
                 setUser((prevState) => ({
                     ...prevState,
@@ -155,9 +164,16 @@ export const SignUp = () => {
         // Else just update the value
         if (submitted) {
             console.log("submitted");
-            console.log(user[name].validate(value));
+            console.log("Name", name);
             console.log("Value", value);
-            const valid = user[name].validate(value);
+            console.log("User", user);
+            let valid;
+            if (name === "confirmPassword") {
+                valid = user[name].validate(user.password.value);
+            } else {
+                valid = user[name].validate();
+            }
+            console.log(valid);
             setUser((prevState) => ({
                 ...prevState,
                 [name]: {
