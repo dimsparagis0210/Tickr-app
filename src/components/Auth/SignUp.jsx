@@ -97,16 +97,19 @@ export const SignUp = () => {
         },
     });
 
+    // Method for password validation
     const hasLetterAndNumber = (password) => {
         const regex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
         return regex.test(password);
     }
 
+    // Method for email validation
     const isEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
 
+    // States
     const [submitted, setSubmitted] = useState(0);
     const [passwordType, setPasswordType] = useState("password");
     const navigate = useNavigate();
@@ -202,8 +205,8 @@ export const SignUp = () => {
         console.log(user);
     }
 
+    // Check if the user exists in the database
     const db = useFirebase();
-
     const userExists = (email) => {
         console.log("Fetching users");
         let found;
@@ -225,6 +228,7 @@ export const SignUp = () => {
         });
     }
 
+    // Save the user to the database
     const saveUser = (user) => {
         const newUserKey = push(child(ref(db), 'users')).key;
         const updates = {};

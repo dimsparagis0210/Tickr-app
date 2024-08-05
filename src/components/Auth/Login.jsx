@@ -56,20 +56,24 @@ export const Login = () => {
         },
     });
 
+    // States
     const [submitted, setSubmitted] = useState(0);
 
     const navigate = useNavigate();
 
+    // Function to check if the password has a letter and a number
     const hasLetterAndNumber = (password) => {
         const regex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
         return regex.test(password);
     }
 
+    // Function to check if the email is valid
     const isEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
 
+    // Function to handle the form submission
     const handleSubmit = () => {
         setSubmitted(1);
         let allFieldsValid = 1;
