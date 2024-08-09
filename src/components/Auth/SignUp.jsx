@@ -93,7 +93,7 @@ export const SignUp = () => {
             },
             type: "password",
             label: "Confirm Password",
-            placeholder: "5+ characters",
+            placeholder: "8+ characters",
         },
     });
 
